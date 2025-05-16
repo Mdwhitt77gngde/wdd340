@@ -1,10 +1,67 @@
+body {
+  background-image: url('/images/site/checkerboard.jpg');
+  background-size: 500px 500px; /* Adjust width and height as needed */
+  background-position: center center;
+}
+
 nav {
   background-color: #333;
   color: white;
   padding: 10px;
   text-align: center;
 }
+
 li {
   display: inline;
   margin: 0 15px;
+}
+
+main {
+  background-image: url('/images/vehicles/delorean.jpg');
+  background-repeat: no-repeat;
+  background-position: top center;
+  /* background-size: auto; Adjust width and height as needed */
+}
+
+.content-container {
+  width: 80%;
+  margin: auto;
+  padding: 20px;
+  background-color: #f7f7f7fb; /* Semi-transparent white */
+}
+
+.container3{
+  display: flex;
+
+}
+
+.content-container2 {
+  width: 20%;
+  padding: 40px;
+  background-color: rgba(243, 243, 241, 0.8); /* Semi-transparent white */
+  color: blue;
+}
+
+.content-container4 {
+  width: 100%;
+  padding: 20px;
+  background-color: rgba(243, 243, 241, 0.8); /* Semi-transparent white */
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+  padding: 20px;
+  width: 50%;
+  /* 'position: center;' is invalid and removed */
+}
+
+.reviews-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  width: 50%;
+  list-style-type: disc;
 }

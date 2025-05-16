@@ -2,16 +2,23 @@
 <html lang="en">
 <%- include('../partials/head') %>
 
-<body >
-  <div id="wrapper">
-    <%- include('../partials/header') %>
-    <%- include('../partials/navigation') %>
+<!-- <img src="/images/site/checkerboard.jpg" alt="CSE Motors" class="hero"/> -->
 
-      <main>
-        <%- body %>
-      </main>
+<body>
+  <div class="content-container">
+    <div id="container">
+      
+      <div id="wrapper">
+        <%- include('../partials/header') %>
+        <%- include('../partials/navigation') %>
 
-      <%- include('../partials/footer') %>
+        <main>
+          <%- body %>
+        </main>
+
+        <%- include('../partials/footer') %>
+      </div>
     </div>
+  </div>
 </body>
 </html>
