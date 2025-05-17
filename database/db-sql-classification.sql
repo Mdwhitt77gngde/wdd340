@@ -14,18 +14,18 @@ classification_id integer NOT NULL,
 CONSTRAINT inventory_pkey PRIMARY KEY (inv_id)
 );
 
--- 
--- The following code adds a foreign key constraint to the 'inventory' table, 
--- linking the 'classification_id' column in 'inventory' to the 'classification_id' 
--- column in the 'classification' table. This enforces referential integrity, 
--- ensuring that every 'classification_id' in 'inventory' must exist in 'classification'. 
--- The constraint will cascade updates but will not delete related inventory records 
--- if a classification is deleted.
---
--- ALTER TABLE IF EXISTS public.inventory
---     ADD CONSTRAINT fk_classification
---     FOREIGN KEY (classification_id)
---     REFERENCES public.classification (classification_id)
---     MATCH SIMPLE
---     ON UPDATE CASCADE
---     ON DELETE NO ACTION;
+
+ALTER TABLE IF EXISTS public.inventory
+     ADD CONSTRAINT fk_classification
+     FOREIGN KEY (classification_id)
+     REFERENCES public.classification (classification_id)
+     MATCH SIMPLE
+     ON UPDATE CASCADE
+     ON DELETE NO ACTION;
+
+INSERT INTO public.classification (classification_name)
+VALUES ('Custom'),
+  ('sport'),
+  ('Suv'),
+  ('Truck'),
+  ('Sedan');
