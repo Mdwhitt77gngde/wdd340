@@ -1,0 +1,16 @@
+<!-- views/errors/error.ejs -->
+ <%- include('../partials/header') %>
+ <%- include('../partials/navigation', { nav: nav }) %>
+
+ <main>
+    <h1><%= title %></h1>
+
+    <section class="error-message">
+        <p><%- message %></p>
+
+        <p>But hey, look on the bright side — at least it's not raining... unless it is. 🌧️</p>
+        <p><a href="/">Go back to safety</a></p>
+    </section>
+ </main>
+
+<%- include('../partials/footer') %>

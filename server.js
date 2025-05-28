@@ -12,6 +12,7 @@ const app = express()
 const static = require("./routes/static")
 const inventoryRoute = require("./routes/inventoryRoute")
 const baseController = require("./controllers/baseController")
+const utilities = require("./utilities/index")
 
 /* ***********************
  * View Engine and Templates
@@ -30,6 +31,11 @@ app.get("/", baseController.buildHome)
 
 // Inventory Routes
 app.use("/inv", inventoryRoute)
+
+// File Not Found Route - must be last route in list 
+app.use(async (req, res, next) => {
+  next({status: 404, message: 'sorry, we appear to have lost that page.'})
+})
 
 /* ************************
  * Express Error Handler
