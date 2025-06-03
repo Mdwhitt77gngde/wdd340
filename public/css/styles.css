@@ -118,3 +118,53 @@ main {
   }
 }
 
+/* public/css/styles.css */
+
+/* … (any existing global styles) … */
+
+/* 1. Main wrapper for detail page – ensures content is centered & padded */
+.content-container {
+  width: 90%;
+  max-width: 1000px;
+  margin: auto;
+  padding: 1rem;
+}
+
+/* 2. Flex container for detail page */
+#vehicle-detail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  align-items: flex-start;
+  margin-top: 1rem;
+}
+
+/* 3. Image styling */
+#vehicle-detail img {
+  width: 100%;
+  max-width: 500px;
+  object-fit: cover;
+}
+
+/* 4. Text/info box next to the image */
+.vehicle-info {
+  flex: 1 1 300px;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 1rem;
+  border-radius: 4px;
+}
+
+/* 5. Responsive breakpoint – stack on small screens */
+@media screen and (max-width: 768px) {
+  #vehicle-detail {
+    flex-direction: column;
+  }
+  #vehicle-detail img {
+    width: 100%;
+    max-width: none;
+  }
+  .vehicle-info {
+    width: 100%;
+  }
+}
+

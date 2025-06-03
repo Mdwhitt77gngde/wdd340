@@ -1,4 +1,4 @@
-const invModel =require("../models/inventory-model")
+const invModel = require("../models/inventory-model")
 const utilities = require("../utilities/")
 
 const invCont = {}
@@ -7,34 +7,53 @@ const invCont = {}
  * Build inventory by classification view
  * ************************* */
 invCont.buildByClassificationId = async function (req, res, next) {
-const classification_id = parseInt(req.params.classification_Id)//parseInt(***)
+  try {
+    const classification_id = parseInt(req.params.classification_Id) // parseInt
     const data = await invModel.getInventoryByClassificationId(classification_id)
     const grid = await utilities.buildClassificationGrid(data)
-    let nav = await utilities.getNav()
+    const nav = await utilities.getNav()
     const className = data[0].classification_name
-    res.render("./inventory/classification", {
-        title: className + " vehicles",
-        nav,
-        grid,
+    // ← FIX: drop the leading "./" so Express/EJS looks in "views/inventory/classification.ejs"
+    res.render("inventory/classification", {
+      title: className + " vehicles",
+      nav,
+      grid,
     })
-    
+  } catch (error) {
+    next(error)
+  }
 }
 
 /* ***************************
  * Build single vehicle detail view
  * ************************* */
 invCont.buildDetail = async function (req, res, next) {
-    const inv_id = req.params.inv_id;
-    //const data = await invModel.getInventoryByClassificationId(inv_id);
-    const data = await invModel.getInventoryById(inv_id);//check
-    const vehicleName = `${data.inv_make} ${data.inv_model}`;
-    let nav = await utilities.getNav();
-    const vehicleHtml = utilities.buildVehicleDetailView(data);
-    res.render("./inventory/vehicle-detail", {
-        title: vehicleName,
+  try {
+    const inv_id = parseInt(req.params.inv_id)
+    const data = await invModel.getInventoryById(inv_id)
+    const nav = await utilities.getNav()
+
+    // ← FIX: If no vehicle found, return 404
+    if (!data) {
+      return res.status(404).render("errors/error", {
+        title: "Vehicle Not Found",
+        message: "Sorry, we cannot find that vehicle.",
         nav,
-        vehicleHtml,
+      })
+    }
+
+    const vehicleName = `${data.inv_make} ${data.inv_model}`
+    const vehicleHtml = utilities.buildVehicleDetailView(data)
+
+    // ← FIX: render "inventory/detail" (maps to views/inventory/detail.ejs)
+    res.render("inventory/detail", {
+      title: vehicleName,
+      nav,
+      vehicleHtml,
     })
+  } catch (error) {
+    next(error)
+  }
 }
 
 module.exports = invCont
