@@ -13,22 +13,7 @@ const static = require("./routes/static")
 const inventoryRoute = require("./routes/inventoryRoute")
 const baseController = require("./controllers/baseController")
 const utilities = require("./utilities/index")
-const session = require("express-session")
-const pool = require('./database/')
-
-/* ***********************
- * Middleware
- * ************************
-app.use(session({
-  store: new (require('connect-pg-simple')(session))({
-    createTableIfMissing: true,
-  pool,
-  }),
-  secret: process.env.SESSION_SECRET,
-  resave: true,
-  saveUninitialized: true,
-  name: 'sessionId',
-}))/
+const pool = require("./database/") // Required by models
 
 /* ***********************
  * View Engine and Templates
@@ -42,15 +27,15 @@ app.set("layout", "./layouts/layout") // not at views root
  *************************/
 app.use(static)
 
-//Index Route
+// Index Route
 app.get("/", utilities.handleErrors(baseController.buildHome))
 
 // Inventory Routes
 app.use("/inv", inventoryRoute)
 
-// File Not Found Route - must be last route in list 
+// File Not Found Route – must be last route in list
 app.use(async (req, res, next) => {
-  next({status: 404, message: 'sorry, we appear to have lost that page.'})
+  next({ status: 404, message: "sorry, we appear to have lost that page." })
 })
 
 /* ************************
@@ -60,11 +45,14 @@ app.use(async (req, res, next) => {
 app.use(async (err, req, res, next) => {
   let nav = await utilities.getNav()
   console.error(`Error at: "${req.originalUrl}": ${err.message}`)
-  if(err.status == 404){ message = err.message} else {message = 'oh no! There was a crash. Maybe try a different route?'}
+  let message =
+    err.status === 404
+      ? err.message
+      : "oh no! There was a crash. Maybe try a different route?"
   res.render("errors/error", {
-    title: err.status || 'Server Error',
-    message: err.message,
-    nav
+    title: err.status || "Server Error",
+    message: message,
+    nav,
   })
 })
 
