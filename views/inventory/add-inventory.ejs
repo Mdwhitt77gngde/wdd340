@@ -1,0 +1,42 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navigation', { nav: nav }) %>
+
+<main class="content-container">
+  <h1>Add Classification</h1>
+
+  <!-- Flash message placed inside form container -->
+  <% if (messages && messages().length) { %>
+    <div class="flash flash-error">
+      <%- messages() %>
+    </div>
+  <% } %>
+
+  <!-- Validation errors -->
+  <% if (errors) { %>
+    <div class="flash flash-error">
+      <ul class="errors">
+        <% errors.array().forEach(err => { %>
+          <li><%= err.msg %></li>
+        <% }) %>
+      </ul>
+    </div>
+  <% } %>
+
+  <form action="/inv/add-classification" method="post" class="manage-form">
+    <fieldset>
+      <legend>Classification Name</legend>
+      <input
+        type="text"
+        id="classification_name"
+        name="classification_name"
+        required
+        pattern="[A-Za-z0-9]+"
+        placeholder="No spaces or specials"
+        value="<%= data.classification_name || '' %>"
+      >
+      <button type="submit">Add Classification</button>
+    </fieldset>
+  </form>
+</main>
+
+<%- include('../partials/footer') %>

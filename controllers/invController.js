@@ -92,4 +92,51 @@ invCont.registerClassification = async function (req, res, next) {
   }
 }
 
+/* ***************************************
+ *  Deliver add inventory view
+ * ************************************* */
+invCont.buildAddInventory = async function (req, res, next) {
+  try {
+    const nav = await utilities.getNav()
+    // build classification select list for initial load
+    const classificationList = await utilities.buildClassificationList()
+    res.render('inventory/add-inventory', {
+      title: 'Add Vehicle',
+      nav,
+      errors: null,
+      data: {},
+      classificationList,
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+/* ***************************************
+ *  Process new inventory item
+ * ************************************* */
+invCont.registerInventory = async function (req, res, next) {
+  try {
+    const nav = await utilities.getNav()
+    const {
+      inv_make, inv_model, inv_year, inv_description,
+      inv_image, inv_thumbnail, inv_price, inv_miles,
+      inv_colcr, classification_id
+    } = req.body
+
+    const newInv = await invModel.addInventory(
+      inv_make, inv_model, inv_year, inv_description,
+      inv_image, inv_thumbnail, inv_price, inv_miles,
+      inv_colcr, classification_id
+    )
+
+    req.flash('notice', `Vehicle '${newInv.inv_make} ${newInv.inv_model}' added.`)
+    // Redirect back to management view
+    res.render('inventory/management', { title: 'Inventory Management', nav })
+  } catch (error) {
+    next(error)
+  }
+}
+
+
 module.exports = invCont
