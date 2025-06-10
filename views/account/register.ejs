@@ -1,10 +1,15 @@
+<!-- views/account/register.ejs (add stickiness) -->
 <%- include('../partials/header') %>
-
 <main>
   <h1><%= title %></h1>
-
-  <!-- Flash messages -->
   <%- messages() %>
+  <% if (errors) { %>
+    <ul class="errors">
+      <% errors.array().forEach(err => { %>
+        <li><%= err.msg %></li>
+      <% }) %>
+    </ul>
+  <% } %>
 
   <form action="/account/register" method="post" class="register-form">
     <label for="account_firstname">First Name:</label>
@@ -13,7 +18,7 @@
       id="account_firstname"
       name="account_firstname"
       required
-      placeholder="Enter your first name"
+      value="<%= data.account_firstname || '' %>"
     >
 
     <label for="account_lastname">Last Name:</label>
@@ -22,21 +27,21 @@
       id="account_lastname"
       name="account_lastname"
       required
-      placeholder="Enter your last name"
+      value="<%= data.account_lastname || '' %>"
     >
 
-    <label for="account_email">Email Address:</label>
+    <label for="account_email">Email:</label>
     <input
       type="email"
       id="account_email"
       name="account_email"
       required
-      placeholder="Enter a valid email address"
+      value="<%= data.account_email || '' %>"
     >
 
     <label for="account_password">Password:</label>
     <div class="password-requirements">
-      Passwords must be at least 12 characters and contain at least 1 number, 1 capital letter, and 1 special character
+      Password must be 12+ chars, include uppercase, number & symbol
     </div>
     <input
       type="password"
@@ -44,11 +49,9 @@
       name="account_password"
       required
       pattern="^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\\s).{12,}$"
-      placeholder="••••••••••••"
     >
 
     <button type="submit">Register</button>
   </form>
 </main>
-
 <%- include('../partials/footer') %>

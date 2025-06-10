@@ -1,5 +1,5 @@
 // models/account-model.js
-const pool = require('../database')
+const pool = require('../database/')
 
 /* *****************************
  *   Register new account
@@ -26,4 +26,17 @@ async function registerAccount(
   }
 }
 
-module.exports = { registerAccount }
+/* **********************
+ *   Check for existing email
+ * ********************* */
+async function checkExistingEmail(account_email) {
+  try {
+    const sql = "SELECT * FROM account WHERE account_email = $1"
+    const result = await pool.query(sql, [account_email])
+    return result.rowCount
+  } catch (error) {
+    return error.message
+  }
+}
+
+module.exports = { registerAccount, checkExistingEmail }
