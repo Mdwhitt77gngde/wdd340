@@ -7,7 +7,7 @@
  *************************/
 const express = require("express")
 const expressLayouts = require("express-ejs-layouts")
-const env = require("dotenv").config()
+require("dotenv").config()
 const app = express()
 const static = require("./routes/static")
 const inventoryRoute = require("./routes/inventoryRoute")
@@ -16,33 +16,33 @@ const utilities = require("./utilities/index")
 const session = require("express-session")
 const pool = require("./database/") // Required by models
 const accountRoute = require("./routes/accountRoute")
-const bodyParser = require('body-parser')
-
 
 /* **************************
- * Middleware
- * ***************************/
-app.use(session({
-  store: new (require('connect-pg-simple')(session))({
-    createTableIfMissing: true,
-    pool,
-  }),
-  secret: process.env.SESSION_SECRET,
-  resave: true,
-  saveUninitialized: true,
-  name: 'sessionId',
-}))
-
-// Express Messages Middleware
-app.use(require('connect-flash')())
-app.use(function(req, res, next){
-  res.locals.messages = require('express-messages')(req, res)
+ * Session & Flash Middleware
+ * **************************/
+app.use(
+  session({
+    store: new (require("connect-pg-simple")(session))({
+      createTableIfMissing: true,
+      pool,
+    }),
+    secret: process.env.SESSION_SECRET,
+    resave: true,
+    saveUninitialized: true,
+    name: "sessionId",
+  })
+)
+app.use(require("connect-flash")())
+app.use((req, res, next) => {
+  res.locals.messages = require("express-messages")(req, res)
   next()
 })
 
-// Body Parser Middleware
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
+/* **************************
+ * Body Parsers (built-in)
+ * **************************/
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
 /* ***********************
  * View Engine and Templates
@@ -65,7 +65,7 @@ app.use("/inv", inventoryRoute)
 // Account Routes
 app.use("/account", accountRoute)
 
-// File Not Found Route – must be last route in list
+// File Not Found Route – must be last route
 app.use(async (req, res, next) => {
   next({ status: 404, message: "sorry, we appear to have lost that page." })
 })
@@ -75,15 +75,15 @@ app.use(async (req, res, next) => {
  * Place after all other middleware
  *************************/
 app.use(async (err, req, res, next) => {
-  let nav = await utilities.getNav()
+  const nav = await utilities.getNav()
   console.error(`Error at: "${req.originalUrl}": ${err.message}`)
-  let message =
+  const message =
     err.status === 404
       ? err.message
       : "oh no! There was a crash. Maybe try a different route?"
   res.render("errors/error", {
     title: err.status || "Server Error",
-    message: message,
+    message,
     nav,
   })
 })
