@@ -1,10 +1,13 @@
-const pool = require("../database/")
+// models/inventory-model.js
+const pool = require('../database/')
 
 /* ***************************
  *  Get all classification data
  * ************************** */
 async function getClassifications(){
-  return await pool.query("SELECT * FROM public.classification ORDER BY classification_name")
+  return await pool.query(
+    "SELECT * FROM public.classification ORDER BY classification_name"
+  )
 }
 
 /* ***************************
@@ -14,14 +17,14 @@ async function getInventoryByClassificationId(classification_id) {
   try {
     const data = await pool.query(
       `SELECT * FROM public.inventory AS i
-      JOIN public.classification AS c
-      ON i.classification_id = c.classification_id
-      WHERE i.classification_id = $1`,
+       JOIN public.classification AS c
+         ON i.classification_id = c.classification_id
+       WHERE i.classification_id = $1`,
       [classification_id]
     )
     return data.rows
   } catch (error) {
-    console.error("getInventoryByClassificationId error" + error)//<-- old getclassificationbyid error
+    console.error("getInventoryByClassificationId error:", error)
     throw error
   }
 }
@@ -33,16 +36,36 @@ async function getInventoryById(inv_id){
   try {
     const data = await pool.query(
       `SELECT * FROM public.inventory AS i
-      JOIN public.classification AS c
-      ON i.classification_id = c.classification_id
-      WHERE i.inv_id = $1`,
+       JOIN public.classification AS c
+         ON i.classification_id = c.classification_id
+       WHERE i.inv_id = $1`,
       [inv_id]
-    );
-    return data.rows[0];
-  }catch (error) {
-    console.error("getInventoryById error: " + error);
-    throw error;
+    )
+    return data.rows[0]
+  } catch (error) {
+    console.error("getInventoryById error:", error)
+    throw error
   }
 }
 
-module.exports = {getClassifications, getInventoryByClassificationId, getInventoryById}
+/* ***************************
+ * Add a new classification
+ * ************************** */
+async function addClassification(classification_name) {
+  try {
+    const sql =
+      'INSERT INTO public.classification (classification_name) VALUES ($1) RETURNING *'
+    const result = await pool.query(sql, [classification_name])
+    return result.rows[0]
+  } catch (error) {
+    console.error('addClassification error:', error)
+    throw error
+  }
+}
+
+module.exports = {
+  getClassifications,
+  getInventoryByClassificationId,
+  getInventoryById,
+  addClassification,  // ← added
+}
