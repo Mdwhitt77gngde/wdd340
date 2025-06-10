@@ -1,0 +1,15 @@
+<!-- views/inventory/management.ejs -->
+<%- include('../partials/header') %>
+<%- include('../partials/navigation', { nav: nav }) %>
+<main class="content-container">
+  <h1>Inventory Management</h1>
+
+  <!-- Flash messages -->
+  <%- messages() %>
+
+  <ul class="management-links">
+    <li><a href="/inv/add-classification">Add New Classification</a></li>
+    <li><a href="/inv/add-inventory">Add New Vehicle</a></li>
+  </ul>
+</main>
+<%- include('../partials/footer') %>
