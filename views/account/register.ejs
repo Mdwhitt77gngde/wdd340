@@ -1,6 +1,6 @@
-<!-- views/account/register.ejs (add stickiness) -->
 <%- include('../partials/header') %>
-<main>
+
+<main class="content-container">
   <h1><%= title %></h1>
   <%- messages() %>
   <% if (errors) { %>
@@ -41,17 +41,17 @@
 
     <label for="account_password">Password:</label>
     <div class="password-requirements">
-      Password must be 12+ chars, include uppercase, number & symbol
+      Password must be at least 12 characters long and include at least 1 uppercase letter, 1 number, and 1 symbol.
     </div>
     <input
       type="password"
       id="account_password"
       name="account_password"
       required
-      pattern="^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\\s).{12,}$"
     >
 
     <button type="submit">Register</button>
   </form>
 </main>
+
 <%- include('../partials/footer') %>

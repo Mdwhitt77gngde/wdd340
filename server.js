@@ -8,14 +8,15 @@
 const express = require("express")
 const expressLayouts = require("express-ejs-layouts")
 require("dotenv").config()
+const cookieParser = require("cookie-parser")             // ← NEW
 const app = express()
 const static = require("./routes/static")
 const inventoryRoute = require("./routes/inventoryRoute")
+const accountRoute = require("./routes/accountRoute")
 const baseController = require("./controllers/baseController")
-const utilities = require("./utilities/index")
+const utilities = require("./utilities")
 const session = require("express-session")
 const pool = require("./database/") // Required by models
-const accountRoute = require("./routes/accountRoute")
 
 /* **************************
  * Session & Flash Middleware
@@ -45,11 +46,21 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 /* ***********************
+ * Cookie Parser
+ *************************/
+app.use(cookieParser())                                    // ← NEW
+
+/* ***********************
+ * JWT Check Middleware
+ *************************/
+app.use(utilities.checkJWTToken)                           // ← NEW
+
+/* ***********************
  * View Engine and Templates
  *************************/
 app.set("view engine", "ejs")
 app.use(expressLayouts)
-app.set("layout", "./layouts/layout") // not at views root
+app.set("layout", "./layouts/layout")
 
 /* ***********************
  * Routes
@@ -65,18 +76,17 @@ app.use("/inv", inventoryRoute)
 // Account Routes
 app.use("/account", accountRoute)
 
-// File Not Found Route – must be last route
+// File Not Found Route – must be last
 app.use(async (req, res, next) => {
   next({ status: 404, message: "sorry, we appear to have lost that page." })
 })
 
-/* ************************
+/* ***********************
  * Express Error Handler
- * Place after all other middleware
  *************************/
 app.use(async (err, req, res, next) => {
   const nav = await utilities.getNav()
-  console.error(`Error at: "${req.originalUrl}": ${err.message}`)
+  console.error(`Error at "${req.originalUrl}": ${err.message}`)
   const message =
     err.status === 404
       ? err.message
@@ -90,13 +100,12 @@ app.use(async (err, req, res, next) => {
 
 /* ***********************
  * Local Server Information
- * Values from .env (environment) file
  *************************/
 const port = process.env.PORT
 const host = process.env.HOST
 
 /* ***********************
- * Log statement to confirm server operation
+ * Start Server
  *************************/
 app.listen(port, () => {
   console.log(`app listening on ${host}:${port}`)

@@ -70,29 +70,17 @@ validate.checkRegData = async (req, res, next) => {
 /* **********************************
  *  Login Data Validation Rules
  * ********************************* */
-validate.loginRules = () => {
-  return [
+validate.loginRules = () =>[
     body('account_email')
       .trim()
       .notEmpty()
       .isEmail()
-      .withMessage('A valid email is required.')
-      .normalizeEmail(),
-    body('account_password')
+      .withMessage('A valid email is required.'),
+      body('account_password')
       .trim()
       .notEmpty()
-      .isStrongPassword({
-        minLength: 12,
-        minLowercase: 1,
-        minUppercase: 1,
-        minNumbers: 1,
-        minSymbols: 1,
-      })
-      .withMessage(
-        'Password must be 12+ chars with uppercase, number, and symbol.'
-      ),
-  ]
-}
+      .withMessage('password is required.'),
+]
 
 validate.checkLoginData = async (req, res, next) => {
   const errors = validationResult(req)
