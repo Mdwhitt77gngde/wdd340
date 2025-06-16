@@ -1,8 +1,8 @@
-<!-- views/inventory/management.ejs -->
 <%- include('../partials/header') %>
 <%- include('../partials/navigation', { nav: nav }) %>
+
 <main class="content-container">
-  <h1>Inventory Management</h1>
+  <h1><%= title %></h1>
 
   <!-- Flash messages -->
   <%- messages() %>
@@ -11,5 +11,21 @@
     <li><a href="/inv/add-classification">Add New Classification</a></li>
     <li><a href="/inv/add-inventory">Add New Vehicle</a></li>
   </ul>
+
+  <h2>Manage Inventory</h2>
+  <p>Select a classification to view its vehicles:</p>
+
+  <!-- classificationSelect built in controller -->
+  <div class="classification-select">
+    <%- classificationSelect %>
+  </div>
+
+  <!-- Where our JS will inject the table -->
+  <table id="inventoryDisplay"></table>
+  <noscript>JavaScript must be enabled to use this page.</noscript>
+
+  <!-- hook up our inventory.js -->
+  <script src="/js/inventory.js"></script>
 </main>
+
 <%- include('../partials/footer') %>

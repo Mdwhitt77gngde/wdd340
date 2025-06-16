@@ -1,51 +1,19 @@
 // routes/inventoryRoute.js
-const express           = require('express')
-const router            = express.Router()
-const utilities         = require('../utilities')
-const invController     = require('../controllers/invController')  // matches controllers/invController.js
-const classValidate     = require('../utilities/classification-validation')
-const invValidate       = require('../utilities/inventory-validation')
+const express       = require("express")
+const router        = express.Router()
+const utilities     = require("../utilities")
+const invController = require("../controllers/invController")
 
-// Task 1: Management View (/inv/)
+// Management View
 router.get(
-  '/',
+  "/",
   utilities.handleErrors(invController.buildManagement)
 )
 
-// Task 2: Add Classification
+// Ajax endpoint for JSON
 router.get(
-  '/add-classification',
-  utilities.handleErrors(invController.buildAddClassification)
-)
-router.post(
-  '/add-classification',
-  classValidate.classificationRules(),
-  classValidate.checkClassificationData,
-  utilities.handleErrors(invController.registerClassification)
-)
-
-// Task 3: Add Inventory
-router.get(
-  '/add-inventory',
-  utilities.handleErrors(invController.buildAddInventory)
-)
-router.post(
-  '/add-inventory',
-  invValidate.inventoryRules(),
-  invValidate.checkInventoryData,
-  utilities.handleErrors(invController.registerInventory)
-)
-
-// Classification View (/inv/type/:classification_Id)
-router.get(
-  '/type/:classification_Id',
-  utilities.handleErrors(invController.buildByClassificationId)
-)
-
-// Vehicle Detail (/inv/detail/:inv_id)
-router.get(
-  '/detail/:inv_id',
-  utilities.handleErrors(invController.buildDetail)
+  "/getInventory/:classification_id",
+  utilities.handleErrors(invController.getInventoryJSON)
 )
 
 module.exports = router
