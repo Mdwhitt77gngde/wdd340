@@ -36,7 +36,7 @@ router.post(
 // Account management view (after login)
 router.get(
   "/",
-  utilities.handleErrors(accountController.buildAccountManagement) // ← NEW
+  utilities.checkLogin, utilities.handleErrors(accountController.buildAccountManagement)
 )
 
 module.exports = router
