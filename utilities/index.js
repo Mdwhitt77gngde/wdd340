@@ -109,6 +109,19 @@ Util.checkJWTToken = (req, res, next) => {
   }
 };
 
+/* ****************************************
+ *  Restrict to Employee or Admin
+ **************************************** */
+Util.checkAdmin = (req, res, next) => {
+  const acct = res.locals.accountData
+  if (acct && (acct.account_type === "Employee" || acct.account_type === "Admin")) {
+    return next()
+  }
+  req.flash("warning", "You must be an employee or admin to view that page.")
+  res.redirect("/account/login")
+}
+
+
 /* ***************************************
  * Check that user is logged in
  **************************************** */

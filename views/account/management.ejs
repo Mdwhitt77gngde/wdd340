@@ -1,24 +1,19 @@
-<!-- views/account/management.ejs -->
 <%- include('../partials/header') %>
-<%- include('../partials/navigation', { nav: nav }) %>
 
 <main class="content-container">
   <h1><%= title %></h1>
-
-  <!-- Flash messages -->
   <%- messages() %>
 
-  <section class="account-info">
-    <p>
-      Welcome,
-      <%= accountData.account_firstname %>
-      <%= accountData.account_lastname %>!
-    </p>
-    <p>
-      Your account type is:
-      <strong><%= accountData.account_type %></strong>
-    </p>
-  </section>
+  <!-- Task 3: greeting -->
+  <h2>Welcome <%= accountData.account_firstname %></h2>
+
+  <% if (accountData.account_type === "Employee" || accountData.account_type === "Admin") { %>
+    <h3>Inventory Management</h3>
+    <p><a href="/inv/">Go to Inventory Management</a></p>
+  <% } %>
+
+  <!-- Task 3: always show update‐account link -->
+  <p><a href="/account/update/<%= accountData.account_id %>">Update Account Information</a></p>
 </main>
 
 <%- include('../partials/footer') %>

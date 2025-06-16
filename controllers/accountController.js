@@ -1,9 +1,9 @@
 // controllers/accountController.js
 
-const utilities = require("../utilities")
-const accountModel = require("../models/account-model")
-const bcrypt = require("bcryptjs")
-const jwt = require("jsonwebtoken")
+const utilities     = require("../utilities")
+const accountModel  = require("../models/account-model")
+const bcrypt        = require("bcryptjs")
+const jwt           = require("jsonwebtoken")
 require("dotenv").config()
 
 const accountController = {}
@@ -11,7 +11,7 @@ const accountController = {}
 /* ****************************************
  *  Deliver login view
  *****************************************/
-async function buildLogin(req, res, next) {
+accountController.buildLogin = async function (req, res, next) {
   try {
     const nav = await utilities.getNav()
     res.render("account/login", {
@@ -28,7 +28,7 @@ async function buildLogin(req, res, next) {
 /* ****************************************
  *  Deliver registration view
  *****************************************/
-async function buildRegister(req, res, next) {
+accountController.buildRegister = async function (req, res, next) {
   try {
     const nav = await utilities.getNav()
     res.render("account/register", {
@@ -45,12 +45,12 @@ async function buildRegister(req, res, next) {
 /* ****************************************
  *  Process Registration
  *****************************************/
-async function registerAccount(req, res, next) {
+accountController.registerAccount = async function (req, res, next) {
   try {
     const nav = await utilities.getNav()
     const { account_firstname, account_lastname, account_email, account_password } = req.body
 
-    // ** Hash the password before saving **
+    // Hash the password
     const saltRounds = 10
     const hashedPassword = await bcrypt.hash(account_password, saltRounds)
 
@@ -90,7 +90,7 @@ async function registerAccount(req, res, next) {
 /* ****************************************
  *  Process login request
  *****************************************/
-async function accountLogin(req, res, next) {
+accountController.accountLogin = async function (req, res, next) {
   try {
     const nav = await utilities.getNav()
     const { account_email, account_password } = req.body
@@ -126,13 +126,13 @@ async function accountLogin(req, res, next) {
     const accessToken = jwt.sign(
       accountData,
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: 3600 } // 1 hour in seconds
+      { expiresIn: 3600 } // 1h
     )
 
     // 5) Set cookie
     const cookieOptions = {
       httpOnly: true,
-      maxAge: 3600 * 1000, // 1 hour in ms
+      maxAge: 3600 * 1000,
     }
     if (process.env.NODE_ENV !== "development") cookieOptions.secure = true
     res.cookie("jwt", accessToken, cookieOptions)
@@ -147,7 +147,7 @@ async function accountLogin(req, res, next) {
 /* ****************************************
  *  Deliver account management view
  *****************************************/
-async function buildAccountManagement(req, res, next) {
+accountController.buildAccountManagement = async function (req, res, next) {
   try {
     const nav = await utilities.getNav()
     res.render("account/management", {
@@ -159,10 +159,75 @@ async function buildAccountManagement(req, res, next) {
   }
 }
 
-module.exports = {
-  buildLogin,
-  buildRegister,
-  registerAccount,
-  accountLogin,
-  buildAccountManagement,
+/* **********************************
+ *  Deliver account update view
+ ********************************** */
+accountController.buildAccountUpdate = async function (req, res, next) {
+  try {
+    const nav  = await utilities.getNav()
+    const acct = await accountModel.getAccountById(req.params.account_id)
+    res.render("account/update", {
+      title: "Update Account",
+      nav,
+      errors: null,
+      data: acct,
+    })
+  } catch (error) {
+    next(error)
+  }
 }
+
+/* **********************************
+ *  Process account info update
+ ********************************** */
+accountController.updateAccountInfo = async function (req, res, next) {
+  try {
+    const { account_id, account_firstname, account_lastname, account_email } = req.body
+    await accountModel.updateAccountInfo(
+      account_id,
+      account_firstname,
+      account_lastname,
+      account_email
+    )
+    req.flash("notice", "Account information updated.")
+
+    // re-sign token with new data
+    const updated = await accountModel.getAccountById(account_id)
+    delete updated.account_password
+    const accessToken = jwt.sign(updated, process.env.ACCESS_TOKEN_SECRET, { expiresIn: 3600 })
+    res.cookie("jwt", accessToken, { httpOnly: true })
+
+    res.redirect("/account/")
+  } catch (error) {
+    next(error)
+  }
+}
+
+/* **********************************
+ *  Process password change
+ ********************************** */
+accountController.updatePassword = async function (req, res, next) {
+  try {
+    const { account_id, new_password } = req.body
+    const hashed = await bcrypt.hash(new_password, 12)
+    await accountModel.updatePassword(account_id, hashed)
+    req.flash("notice", "Password successfully changed.")
+    res.redirect("/account/")
+  } catch (error) {
+    next(error)
+  }
+}
+
+/* **********************************
+ *  Logout
+ ********************************** */
+accountController.logout = async function (req, res, next) {
+  try {
+    res.clearCookie("jwt")
+    res.redirect("/")
+  } catch (error) {
+    next(error)
+  }
+}
+
+module.exports = accountController

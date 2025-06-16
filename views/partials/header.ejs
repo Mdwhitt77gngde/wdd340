@@ -1,10 +1,18 @@
-<!-- views/partials/header.ejs -->
 <header id="top-header">
   <span class="siteName">
-    <a href="/" title="Return to home page">CSE Motors</a>
+    <a href="/" title="Return to home page">CSE Motors</a>
   </span>
-  <div id="tools">
-    <a href="/account/login" title="Log in">Login</a>
-    <a href="/account/register" title="Register">Register</a>
-  </div>
+
+  <% if (locals.loggedin) { %>
+    <!-- When logged in: show welcome & logout -->
+    <span class="welcome">
+      <a href="/account/"><%= locals.accountData.account_firstname %></a>
+    </span>
+    <form action="/account/logout" method="post" class="inline">
+      <button type="submit">Logout</button>
+    </form>
+  <% } else { %>
+    <!-- When not logged in: show My Account link -->
+    <a href="/account/login" title="Click to log in">My Account</a>
+  <% } %>
 </header>
