@@ -1,0 +1,38 @@
+<%- include('../partials/header') %>
+<main class="content-container">
+  <h1><%= title %></h1>
+  <%- messages() %>
+  <% if (errors) { %>
+    <ul class="errors">
+      <% errors.forEach(err => { %>
+        <li><%= err.msg %></li>
+      <% }) %>
+    </ul>
+  <% } %>
+
+  <form action="/reviews/add" method="post">
+    <input type="hidden" name="inv_id" value="<%= inv_id %>">
+
+    <label for="review_rating">Rating (1–5):</label>
+    <input
+      type="number"
+      id="review_rating"
+      name="review_rating"
+      min="1"
+      max="5"
+      required
+      value="<%= data.review_rating || '' %>"
+    >
+
+    <label for="review_comment">Your Review:</label>
+    <textarea
+      id="review_comment"
+      name="review_comment"
+      rows="5"
+      required
+    ><%= data.review_comment || '' %></textarea>
+
+    <button type="submit">Submit Review</button>
+  </form>
+</main>
+<%- include('../partials/footer') %>

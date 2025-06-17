@@ -17,6 +17,9 @@ const baseController = require("./controllers/baseController")
 const utilities = require("./utilities")
 const session = require("express-session")
 const pool = require("./database/") // Required by models
+const reviewRoute = require("./routes/reviewRoute")
+app.use("/reviews", reviewRoute)
+
 
 /* **************************
  * Session & Flash Middleware

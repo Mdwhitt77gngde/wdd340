@@ -1,3 +1,6 @@
 <h1><%= title %></h1>
 
 <%- vehicleHtml %>
+
+<a href="/reviews/add/<%= inv.inv_id %>">Leave a Review</a>
+<%- include('../partials/review-list', { inv: inv }) %>

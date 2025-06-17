@@ -1,0 +1,32 @@
+<section id="reviews">
+  <h2>Reviews</h2>
+  <table id="reviewTable">
+    <thead>
+      <tr><th>User</th><th>Rating</th><th>Comment</th><th>Date</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <noscript>
+    Please enable JavaScript to see the reviews.
+  </noscript>
+</section>
+
+<script>
+  // fetch and inject reviews
+  fetch(`/reviews/list/<%= inv.inv_id %>`)
+    .then(r => r.json())
+    .then(data => {
+      const tbody = document.querySelector("#reviewTable tbody")
+      data.forEach(r => {
+        const row = document.createElement("tr")
+        row.innerHTML = `
+          <td>${r.account_firstname} ${r.account_lastname}</td>
+          <td>${r.review_rating}</td>
+          <td>${r.review_comment}</td>
+          <td>${new Date(r.review_date).toLocaleString()}</td>
+        `
+        tbody.appendChild(row)
+      })
+    })
+    .catch(console.error)
+</script>
